@@ -172,6 +172,7 @@ typedef struct fontviewbase {
     void *python_fv_object;
 #endif
     struct fvcontainer *container;
+	uint32 bgcol;
 } FontViewBase;
 
 enum origins { or_zero, or_center, or_lastpress, or_value, or_undefined };

@@ -213,9 +213,16 @@ static void FVDrawGlyph(GWindow pixmap, FontView *fv, int index, int forcebg ) {
     i -= fv->rowoff;
 
     if ( index<fv->b.map->enccount && (fv->b.selected[index] || forcebg)) {
-	box.x = j*fv->cbw+1; box.width = fv->cbw-1;
-	box.y = i*fv->cbh+fv->lab_height+1; box.height = fv->cbw;
-	GDrawFillRect(pixmap,&box,fv->b.selected[index] ? fvselcol : view_bgcol );
+		box.x = j*fv->cbw+1; box.width = fv->cbw-1;
+		box.y = i*fv->cbh+fv->lab_height+1; box.height = fv->cbw;
+		//GDrawFillRect(pixmap,&box,fv->b.selected[index] ? fvselcol : view_bgcol );
+		
+		// Dong 2012-08-01
+		if(fv->b.selected[index])
+		{
+			fv->b.bgcol = 0xff0000;
+		}
+		GDrawFillRect(pixmap,&box,fv->b.selected[index] ? fvselcol : fv->b.bgcol );
     }
     feat_gid = FeatureTrans(fv,index);
     sc = feat_gid!=-1 ? fv->b.sf->glyphs[feat_gid]: NULL;
