@@ -212,20 +212,16 @@ static void FVDrawGlyph(GWindow pixmap, FontView *fv, int index, int forcebg ) {
     j = index - i*fv->colcnt;
     i -= fv->rowoff;
 
+	feat_gid = FeatureTrans(fv,index);
+    sc = feat_gid!=-1 ? fv->b.sf->glyphs[feat_gid]: NULL;
     if ( index<fv->b.map->enccount && (fv->b.selected[index] || forcebg)) {
 		box.x = j*fv->cbw+1; box.width = fv->cbw-1;
 		box.y = i*fv->cbh+fv->lab_height+1; box.height = fv->cbw;
-		//GDrawFillRect(pixmap,&box,fv->b.selected[index] ? fvselcol : view_bgcol );
-		
-		// Dong 2012-08-01
-		if(fv->b.selected[index])
-		{
-			fv->b.bgcol = 0xff0000;
-		}
-		GDrawFillRect(pixmap,&box,fv->b.selected[index] ? fvselcol : fv->b.bgcol );
+		uint32 bgcol = view_bgcol;
+		if(sc!=NULL)
+			bgcol = sc->color;
+		GDrawFillRect(pixmap,&box,fv->b.selected[index] ? fvselcol : bgcol );
     }
-    feat_gid = FeatureTrans(fv,index);
-    sc = feat_gid!=-1 ? fv->b.sf->glyphs[feat_gid]: NULL;
     if ( !SCWorthOutputting(sc) ) {
 	int x = j*fv->cbw+1, xend = x+fv->cbw-2;
 	int y = i*fv->cbh+fv->lab_height+1, yend = y+fv->cbw-1;
@@ -6236,7 +6232,7 @@ static void FVExpose(FontView *fv,GWindow pixmap,GEvent *event) {
 		laststyles = styles;
 	    }
 	}
-	FVDrawGlyph(pixmap,fv,index,false);
+	FVDrawGlyph(pixmap,fv,index,true);
     }
     if ( fv->showhmetrics&fvm_baseline ) {
 	for ( i=0; i<=fv->rowcnt; ++i )
